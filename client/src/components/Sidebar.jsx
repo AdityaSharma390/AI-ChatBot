@@ -4,7 +4,8 @@ import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { 
   Plus, Search, Pin, Star, Trash2, Edit3, LogOut, BarChart3, 
-  Settings, Folder, Calendar, Sun, Moon, Check, X, Bot, Info, ChevronRight
+  Settings, Folder, Calendar, Sun, Moon, Check, X, Bot, Info, ChevronRight,
+  Lock, ArrowUpRight
 } from 'lucide-react';
 
 const Sidebar = ({ closeSidebar }) => {
