@@ -74,11 +74,12 @@ const LandingPage = () => {
         <div className="text-center max-w-3xl space-y-6">
 
           {/* Animated Orb */}
-          <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center animate-float">
-            <div className="absolute w-28 h-28 rounded-full bg-gradient-to-tr from-yellow-500 via-amber-500 to-yellow-600 blur-2xl opacity-20 animate-pulse-slow"></div>
-            <div className="absolute w-20 h-20 rounded-full border border-yellow-500/10 bg-gradient-to-tr from-yellow-500/10 to-transparent animate-spin-slow"></div>
-            <div className="absolute w-16 h-16 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 animate-orb-morph opacity-75 glow-gold border border-yellow-300/20"></div>
-            <div className="absolute w-16 h-16 rounded-full bg-white/5 backdrop-blur-[1px] border border-white/10 shadow-inner"></div>
+          <div className="relative w-36 h-36 mx-auto mb-4 flex items-center justify-center animate-float">
+            <div className="absolute w-32 h-32 rounded-full bg-gradient-to-tr from-yellow-500 via-amber-500 to-yellow-600 blur-3xl opacity-20 animate-pulse-slow"></div>
+            <div className="absolute w-24 h-24 rounded-full border border-yellow-500/10 bg-gradient-to-tr from-yellow-500/5 to-transparent animate-spin-slow"></div>
+            <div className="absolute w-20 h-20 bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-600 orb-sphere opacity-80"></div>
+            <div className="absolute w-20 h-20 rounded-full bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-60 pointer-events-none"></div>
+            <div className="absolute w-20 h-20 rounded-full bg-white/[0.03] backdrop-blur-[2px] border border-white/10 shadow-inner"></div>
           </div>
 
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm font-semibold tracking-wide">

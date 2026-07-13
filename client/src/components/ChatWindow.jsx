@@ -437,15 +437,17 @@ const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
           <div className="h-full flex flex-col justify-center items-center select-none py-12 max-w-4xl mx-auto w-full">
             
             {/* Swirling glowing gold orb */}
-            <div className="relative w-40 h-40 flex items-center justify-center animate-float mb-6 shrink-0">
-              {/* Outer Golden Aura */}
-              <div className="absolute w-36 h-36 rounded-full bg-gradient-to-tr from-yellow-500 via-amber-500 to-yellow-600 blur-2xl opacity-20 animate-pulse-slow"></div>
-              {/* Spinning Inner Energy Ring */}
-              <div className="absolute w-28 h-28 rounded-full border border-yellow-500/10 bg-gradient-to-tr from-yellow-500/10 to-transparent animate-spin-slow"></div>
-              {/* Swirling Fluid Morphing Sphere */}
-              <div className="absolute w-24 h-24 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 animate-orb-morph animate-orb-rotate opacity-75 glow-gold border border-yellow-300/20"></div>
-              {/* Glassmorphic Bubble Overlay */}
-              <div className="absolute w-24 h-24 rounded-full bg-white/5 backdrop-blur-[1px] border border-white/10 shadow-inner"></div>
+            <div className="relative w-44 h-44 flex items-center justify-center animate-float mb-6 shrink-0">
+              {/* Layer 1: Wide soft ambient aura */}
+              <div className="absolute w-40 h-40 rounded-full bg-gradient-to-tr from-yellow-500 via-amber-500 to-yellow-600 blur-3xl opacity-20 animate-pulse-slow"></div>
+              {/* Layer 2: Spinning energy ring */}
+              <div className="absolute w-32 h-32 rounded-full border border-yellow-500/10 bg-gradient-to-tr from-yellow-500/5 to-transparent animate-spin-slow"></div>
+              {/* Layer 3: The main golden sphere — uses orb-sphere class for morph+glow */}
+              <div className="absolute w-24 h-24 bg-gradient-to-br from-yellow-300 via-amber-500 to-yellow-600 orb-sphere opacity-80"></div>
+              {/* Layer 4: Inner specular highlight (top-left light catch) */}
+              <div className="absolute w-24 h-24 rounded-full bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-60 pointer-events-none"></div>
+              {/* Layer 5: Glass overlay for depth */}
+              <div className="absolute w-24 h-24 rounded-full bg-white/[0.03] backdrop-blur-[2px] border border-white/10 shadow-inner"></div>
             </div>
 
             <div className="space-y-2 text-center mb-8 shrink-0">
