@@ -10,11 +10,25 @@ export default {
       colors: {
         chatBg: {
           light: '#F8FAFC',
-          dark: '#0B0F19'
+          dark: '#06080e'
         },
         chatPanel: {
           light: '#FFFFFF',
-          dark: '#161F30'
+          dark: '#0b0e17'
+        },
+        gold: {
+          DEFAULT: '#eab308',
+          50: '#fefce8',
+          100: '#fef9c3',
+          200: '#fef08a',
+          300: '#fde047',
+          400: '#facc15',
+          500: '#eab308',
+          600: '#ca8a04',
+          700: '#a16207',
+          800: '#854d0e',
+          900: '#713f12',
+          950: '#422006'
         },
         chatBubble: {
           user: {

@@ -1,14 +1,17 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { ChatContext } from '../context/ChatContext';
+import { AuthContext } from '../context/AuthContext';
 import { useVoice } from '../hooks/useVoice';
 import MessageItem from './MessageItem';
 import { jsPDF } from 'jspdf';
 import { 
   Send, Paperclip, Mic, MicOff, Image, Sparkles, Star, Pin, 
-  Download, Trash2, X, ChevronDown, Bot, FileText, Menu, AlertCircle
+  Download, Trash2, X, ChevronDown, Bot, FileText, Menu, AlertCircle,
+  Truck, Layers, Calculator, ArrowUpRight
 } from 'lucide-react';
 
 const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
+  const { user } = useContext(AuthContext);
   const {
     currentConversation,
     messages,
@@ -204,9 +207,118 @@ const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
     document.body.removeChild(link);
   };
 
+  const renderInputForm = (isCenter = false) => {
+    return (
+      <form onSubmit={handleSend} className={`w-full max-w-3xl mx-auto ${isCenter ? 'px-0' : 'px-4'} space-y-3`}>
+        {/* File Attachment preview */}
+        {selectedFile && (
+          <div className="flex items-center justify-between p-3 bg-yellow-950/20 border border-yellow-500/20 rounded-2xl text-xs text-yellow-500">
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4 text-yellow-500" />
+              <span className="font-semibold truncate max-w-sm">{selectedFile.name}</span>
+              <span className="text-[10px] text-slate-500">({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSelectedFile(null)}
+              className="p-1 hover:bg-slate-900 rounded-lg transition-colors cursor-pointer text-slate-400 hover:text-white"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+
+        {/* Combined Controls Input row */}
+        <div className="flex gap-2">
+          {/* Choose file upload */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md"
+          />
+
+          <div className="flex-grow flex items-center gap-3 w-full bg-[#090c14]/80 border border-slate-850 focus-within:border-yellow-500/30 rounded-full px-4 py-2.5 transition-all duration-200 shadow-inner">
+            {/* Paperclip */}
+            <button
+              type="button"
+              onClick={triggerFileDialog}
+              className="p-2 bg-slate-900/60 hover:bg-slate-900 text-slate-400 hover:text-yellow-500 rounded-full transition-colors cursor-pointer shrink-0"
+              title="Attach File (PDF, text, images)"
+            >
+              <Paperclip className="w-4 h-4" />
+            </button>
+
+            {/* Model Badge */}
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-900/80 border border-slate-850 rounded-full text-[10px] text-slate-300 font-bold tracking-wide select-none shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Gemini 3.5</span>
+            </div>
+
+            {/* Text prompt */}
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend(e);
+                }
+              }}
+              rows={1}
+              className="flex-grow bg-transparent border-none text-xs outline-none text-slate-200 placeholder-slate-500 resize-none py-1 pl-2"
+              placeholder={imageGenMode ? "Describe the image you want to generate..." : "Tell us about your capabilities..."}
+              style={{ maxHeight: '160px' }}
+            />
+
+            {/* Speech recognition toggle */}
+            {browserSupportsSpeech && (
+              <button
+                type="button"
+                onClick={isListening ? stopListening : startListening}
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
+                  isListening
+                    ? 'bg-rose-500 text-white hover:bg-rose-600 animate-pulse'
+                    : 'text-slate-500 hover:text-yellow-500'
+                }`}
+                title={isListening ? "Listening... click to stop" : "Speak message"}
+              >
+                {isListening ? <MicOff className="w-3.5 h-3.5 animate-pulse" /> : <Mic className="w-3.5 h-3.5" />}
+              </button>
+            )}
+
+            {/* Image Gen Mode Toggle */}
+            <button
+              type="button"
+              onClick={() => setImageGenMode(!imageGenMode)}
+              className={`p-1.5 rounded-lg transition-colors cursor-pointer shrink-0 ${
+                imageGenMode
+                  ? 'text-yellow-500 bg-yellow-500/10'
+                  : 'text-slate-500 hover:text-yellow-500'
+              }`}
+              title="Generate Image instead"
+            >
+              <Image className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Send trigger */}
+            <button
+              type="submit"
+              disabled={(!input.trim() && !selectedFile) || sending}
+              className="w-8 h-8 rounded-full bg-yellow-500 disabled:bg-yellow-500/40 text-slate-950 flex items-center justify-center hover:scale-105 active:scale-100 transition-all cursor-pointer font-bold shrink-0 shadow-md shadow-yellow-500/10"
+            >
+              <Send className="w-4 h-4 text-slate-950" />
+            </button>
+          </div>
+        </div>
+      </form>
+    );
+  };
+
   return (
     <div 
-      className="flex-grow h-full flex flex-col bg-chatBg-light dark:bg-chatBg-dark transition-colors duration-300 relative"
+      className="flex-grow h-full flex flex-col futuristic-grid text-slate-200 relative"
       onDragEnter={handleDrag}
       onDragOver={handleDrag}
       onDragLeave={handleDrag}
@@ -214,22 +326,22 @@ const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
     >
       {/* DRAG & DROP OVERLAY DROPZONE */}
       {isDragActive && (
-        <div className="absolute inset-4 rounded-3xl border-3 border-dashed border-indigo-500 bg-indigo-500/10 dark:bg-indigo-600/5 backdrop-blur-md z-50 flex flex-col items-center justify-center pointer-events-none transition-all">
-          <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl flex flex-col items-center gap-3">
-            <Paperclip className="w-10 h-10 text-indigo-600 animate-bounce" />
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white">Drop to Attach File</h3>
+        <div className="absolute inset-4 rounded-3xl border-3 border-dashed border-yellow-500/30 bg-yellow-500/5 backdrop-blur-md z-50 flex flex-col items-center justify-center pointer-events-none transition-all">
+          <div className="p-5 bg-slate-950 border border-slate-800 rounded-3xl shadow-xl flex flex-col items-center gap-3">
+            <Paperclip className="w-10 h-10 text-yellow-500 animate-bounce" />
+            <h3 className="text-lg font-bold text-white">Drop to Attach File</h3>
             <p className="text-xs text-slate-500 max-w-[200px] text-center">Supports PDF documents, plain Text, or PNG/JPG Images.</p>
           </div>
         </div>
       )}
 
       {/* TOP HEADER NAVIGATION */}
-      <header className="h-16 border-b border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between px-4 shrink-0 bg-white/70 dark:bg-slate-950/20 backdrop-blur-md z-20">
+      <header className="h-16 border-b border-slate-900/60 flex items-center justify-between px-6 shrink-0 bg-slate-950/10 backdrop-blur-md z-20">
         <div className="flex items-center gap-3 overflow-hidden">
           {/* Hamburger toggle button for Mobile */}
           <button
             onClick={toggleSidebar}
-            className="p-2 -ml-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900/60 rounded-xl md:hidden transition-colors"
+            className="p-2 -ml-1 text-slate-400 hover:text-white hover:bg-slate-900/60 rounded-xl md:hidden transition-colors"
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -237,115 +349,74 @@ const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
           {currentConversation ? (
             <div className="flex flex-col overflow-hidden">
               <div className="flex items-center gap-2">
-                <h1 className="text-sm font-bold text-slate-950 dark:text-white truncate">{currentConversation.title}</h1>
-                {currentConversation.isPinned && <Pin className="w-3.5 h-3.5 text-indigo-500 fill-indigo-500 shrink-0" />}
+                <h1 className="text-sm font-bold text-white truncate">{currentConversation.title}</h1>
+                {currentConversation.isPinned && <Pin className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 shrink-0" />}
               </div>
-              <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">
+              <span className="text-[10px] font-semibold text-slate-500 mt-0.5">
                 Category: {currentConversation.category}
               </span>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Bot className="w-5 h-5 text-indigo-600" />
-              <h1 className="text-sm font-bold text-slate-950 dark:text-white">AI Assistant Chat</h1>
+              <div className="w-5 h-5 bg-yellow-500 rounded flex items-center justify-center text-slate-950 font-bold select-none text-[10px]">BH</div>
+              <h1 className="text-xs font-bold text-white tracking-wider uppercase">BuildHub</h1>
             </div>
           )}
         </div>
 
-        {/* Toolbar menu if conversation is selected */}
-        {currentConversation && (
-          <div className="flex items-center gap-2">
-            
-            {/* Category dropdown toggle */}
-            <div className="relative group/cat">
-              <button className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 transition-colors">
-                <span>Category</span> <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-              <div className="absolute right-0 top-full mt-1.5 hidden group-hover/cat:block bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl py-1.5 min-w-[120px] z-50">
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    onClick={() => updateConversation(currentConversation._id, { category: cat })}
-                    className="w-full text-left px-4 py-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
-                  >
-                    {cat}
-                  </button>
-                ))}
+        <div className="flex items-center gap-3">
+          {currentConversation && (
+            <div className="flex items-center gap-2">
+              {/* Category dropdown toggle */}
+              <div className="relative group/cat">
+                <button className="flex items-center gap-1 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 rounded-xl text-[10px] font-bold text-slate-400 transition-colors">
+                  <span>Category</span> <ChevronDown className="w-3 h-3" />
+                </button>
+                <div className="absolute right-0 top-full mt-1.5 hidden group-hover/cat:block bg-[#0b0e17] border border-slate-800 rounded-2xl shadow-xl py-1.5 min-w-[120px] z-50">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => updateConversation(currentConversation._id, { category: cat })}
+                      className="w-full text-left px-4 py-1.5 hover:bg-slate-900 text-xs font-semibold text-slate-400 hover:text-yellow-400 transition-all"
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Favorite Star */}
-            <button
-              onClick={() => updateConversation(currentConversation._id, { isFavorite: !currentConversation.isFavorite })}
-              className={`p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 transition-all ${
-                currentConversation.isFavorite ? 'text-yellow-400' : 'text-slate-400 hover:text-slate-900 dark:text-slate-500'
-              }`}
-            >
-              <Star className={`w-4 h-4 ${currentConversation.isFavorite ? 'fill-yellow-400' : ''}`} />
-            </button>
-
-            {/* Pin Toggle */}
-            <button
-              onClick={() => updateConversation(currentConversation._id, { isPinned: !currentConversation.isPinned })}
-              className={`p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 transition-all ${
-                currentConversation.isPinned ? 'text-indigo-500' : 'text-slate-400 hover:text-slate-900 dark:text-slate-500'
-              }`}
-            >
-              <Pin className={`w-4 h-4 ${currentConversation.isPinned ? 'fill-indigo-500' : ''}`} />
-            </button>
-
-            {/* Export Menu */}
-            <div className="relative">
+              {/* Favorite Star */}
               <button
-                onClick={() => setShowExportMenu(!showExportMenu)}
-                className="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:text-slate-400 transition-colors"
-                title="Export conversation"
+                onClick={() => updateConversation(currentConversation._id, { isFavorite: !currentConversation.isFavorite })}
+                className={`p-2 rounded-xl hover:bg-slate-900 transition-all ${
+                  currentConversation.isFavorite ? 'text-yellow-400' : 'text-slate-500 hover:text-slate-200'
+                }`}
               >
-                <Download className="w-4 h-4" />
+                <Star className={`w-4 h-4 ${currentConversation.isFavorite ? 'fill-yellow-400' : ''}`} />
               </button>
-              {showExportMenu && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setShowExportMenu(false)} />
-                  <div className="absolute right-0 top-full mt-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl py-1.5 min-w-[140px] z-50">
-                    <button
-                      onClick={() => handleExport('pdf')}
-                      className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-colors"
-                    >
-                      Export as PDF (.pdf)
-                    </button>
-                    <button
-                      onClick={() => handleExport('md')}
-                      className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-colors"
-                    >
-                      Export as Markdown (.md)
-                    </button>
-                    <button
-                      onClick={() => handleExport('txt')}
-                      className="w-full text-left px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-colors"
-                    >
-                      Export as Text (.txt)
-                    </button>
-                  </div>
-                </>
-              )}
+
+              {/* Pin Toggle */}
+              <button
+                onClick={() => updateConversation(currentConversation._id, { isPinned: !currentConversation.isPinned })}
+                className={`p-2 rounded-xl hover:bg-slate-900 transition-all ${
+                  currentConversation.isPinned ? 'text-yellow-500' : 'text-slate-500 hover:text-slate-200'
+                }`}
+              >
+                <Pin className={`w-4 h-4 ${currentConversation.isPinned ? 'fill-yellow-500' : ''}`} />
+              </button>
             </div>
+          )}
 
-            {/* Delete conversation */}
-            <button
-              onClick={() => deleteConversation(currentConversation._id)}
-              className="p-2 rounded-xl hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-colors"
-              title="Delete conversation"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-
+          {/* User Profile Avatar Circle */}
+          <div className="w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-500 border border-yellow-500/40 flex items-center justify-center font-bold text-xs shadow-md select-none">
+            {user?.name ? user.name[0].toUpperCase() : 'A'}
           </div>
-        )}
+        </div>
       </header>
 
       {/* ERROR BOX BANNER */}
       {error && (
-        <div className="mx-6 mt-4 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 text-rose-600 dark:text-rose-400 text-sm flex items-center justify-between z-10">
+        <div className="mx-6 mt-4 p-4 rounded-2xl bg-rose-950/20 border border-rose-900/30 text-rose-400 text-sm flex items-center justify-between z-10">
           <div className="flex items-center gap-2.5">
             <AlertCircle className="w-5 h-5 shrink-0" />
             <span>{error}</span>
@@ -354,61 +425,107 @@ const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
       )}
 
       {/* MESSAGES LIST BOX AREA */}
-      <div className="flex-grow overflow-y-auto px-4 py-6 md:px-8 space-y-6">
+      <div className="flex-grow overflow-y-auto px-4 py-6 md:px-8 space-y-6 flex flex-col justify-between">
         
         {loading && messages.length === 0 ? (
           <div className="h-full w-full flex items-center justify-center flex-col gap-3">
-            <div className="w-10 h-10 border-3 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-            <p className="text-xs text-slate-400">Loading conversation history...</p>
+            <div className="w-10 h-10 border-3 border-yellow-500/20 border-t-yellow-500 rounded-full animate-spin"></div>
+            <p className="text-xs text-slate-500">Loading conversation history...</p>
           </div>
         ) : messages.length === 0 ? (
-          /* Blank state welcome prompt screen */
-          <div className="h-full max-w-2xl mx-auto flex flex-col justify-center items-center text-center space-y-8 select-none py-12">
-            <div className="p-4 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-full animate-pulse-slow">
-              <Bot className="w-12 h-12" />
+          /* Blank state welcome prompt screen styled exactly like the screenshot */
+          <div className="h-full flex flex-col justify-center items-center select-none py-12 max-w-4xl mx-auto w-full">
+            
+            {/* Swirling glowing gold orb */}
+            <div className="relative w-40 h-40 flex items-center justify-center animate-float mb-6 shrink-0">
+              {/* Outer Golden Aura */}
+              <div className="absolute w-36 h-36 rounded-full bg-gradient-to-tr from-yellow-500 via-amber-500 to-yellow-600 blur-2xl opacity-20 animate-pulse-slow"></div>
+              {/* Spinning Inner Energy Ring */}
+              <div className="absolute w-28 h-28 rounded-full border border-yellow-500/10 bg-gradient-to-tr from-yellow-500/10 to-transparent animate-spin-slow"></div>
+              {/* Swirling Fluid Morphing Sphere */}
+              <div className="absolute w-24 h-24 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 animate-orb-morph animate-orb-rotate opacity-75 glow-gold border border-yellow-300/20"></div>
+              {/* Glassmorphic Bubble Overlay */}
+              <div className="absolute w-24 h-24 rounded-full bg-white/5 backdrop-blur-[1px] border border-white/10 shadow-inner"></div>
             </div>
-            <div className="space-y-3">
-              <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">What can I help with today?</h2>
-              <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md leading-relaxed">
-                Send a question, upload a PDF, attach a PNG/JPG for visual analysis, or speak directly to talk to the model.
+
+            <div className="space-y-2 text-center mb-8 shrink-0">
+              <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-yellow-100 via-yellow-400 to-amber-500 bg-clip-text text-transparent">
+                Welcome back {user?.name ? user.name.split(' ')[0] : 'Alex'}!
+              </h2>
+              <p className="text-slate-400 text-xs tracking-wide">
+                Which house drawing do you want to analyze today?
               </p>
             </div>
-            
-            {/* Quick click suggestions */}
-            <div className="grid grid-cols-2 gap-3.5 w-full pt-4">
+
+            {/* Input Form in the center */}
+            <div className="w-full max-w-2xl px-4 mb-8">
+              {renderInputForm(true)}
+            </div>
+
+            {/* Three suggestions cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl pt-2 px-4 shrink-0">
               <button
-                onClick={() => setInput('Explain standard bubble sort algorithm in Javascript.')}
-                className="p-4 text-left border border-slate-200 dark:border-slate-800 bg-white/50 hover:bg-slate-50 dark:bg-slate-900/30 dark:hover:bg-slate-900/60 text-xs font-semibold rounded-2xl text-slate-700 dark:text-slate-300 hover:scale-[1.01] active:scale-100 transition-all cursor-pointer"
+                type="button"
+                onClick={() => setInput("Search for suppliers who provide the best prices for drawing projects.")}
+                className="p-4 text-left border border-slate-900 bg-[#090c14]/40 hover:bg-[#0b0e17]/80 rounded-2xl transition-all duration-200 cursor-pointer group flex items-start gap-3 hover:border-yellow-500/20 shadow-lg"
               >
-                💡 Javascript Sort Code
+                <div className="p-2 bg-yellow-500/10 text-yellow-500 rounded-xl group-hover:bg-yellow-500 group-hover:text-slate-950 transition-colors shrink-0">
+                  <Truck className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-[11px] font-bold text-white mb-1">Search for suppliers</h4>
+                  <p className="text-[9px] text-slate-500 leading-relaxed">We will find suppliers with the best prices.</p>
+                </div>
               </button>
+              
               <button
-                onClick={() => {
-                  setInput('A beautiful sunset behind futuristic glass towers, digital art');
-                  setImageGenMode(true);
-                }}
-                className="p-4 text-left border border-slate-200 dark:border-slate-800 bg-white/50 hover:bg-slate-50 dark:bg-slate-900/30 dark:hover:bg-slate-900/60 text-xs font-semibold rounded-2xl text-slate-700 dark:text-slate-300 hover:scale-[1.01] active:scale-100 transition-all cursor-pointer"
+                type="button"
+                onClick={() => setInput("Select the best materials based on standard building regulations.")}
+                className="p-4 text-left border border-slate-900 bg-[#090c14]/40 hover:bg-[#0b0e17]/80 rounded-2xl transition-all duration-200 cursor-pointer group flex items-start gap-3 hover:border-yellow-500/20 shadow-lg"
               >
-                🎨 Generate Sunset Image
+                <div className="p-2 bg-yellow-500/10 text-yellow-500 rounded-xl group-hover:bg-yellow-500 group-hover:text-slate-950 transition-colors shrink-0">
+                  <Layers className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-[11px] font-bold text-white mb-1">Select materials</h4>
+                  <p className="text-[9px] text-slate-500 leading-relaxed font-medium">AI BuildHub will select the best materials.</p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setInput("Calculate the estimated cost for building and materials.")}
+                className="p-4 text-left border border-slate-900 bg-[#090c14]/40 hover:bg-[#0b0e17]/80 rounded-2xl transition-all duration-200 cursor-pointer group flex items-start gap-3 hover:border-yellow-500/20 shadow-lg"
+              >
+                <div className="p-2 bg-yellow-500/10 text-yellow-500 rounded-xl group-hover:bg-yellow-500 group-hover:text-slate-950 transition-colors shrink-0">
+                  <Calculator className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-[11px] font-bold text-white mb-1">Calculation of the cost</h4>
+                  <p className="text-[9px] text-slate-500 leading-relaxed font-medium">Our AI will help you to quickly summarize the price.</p>
+                </div>
               </button>
             </div>
+
           </div>
         ) : (
-          messages.map(msg => (
-            <MessageItem key={msg._id} message={msg} onSpeak={speakText} />
-          ))
+          <div className="space-y-6">
+            {messages.map(msg => (
+              <MessageItem key={msg._id} message={msg} onSpeak={speakText} />
+            ))}
+          </div>
         )}
 
         {/* AI Typing Thinking Indicator */}
-        {sending && (
-          <div className="flex gap-4 p-4 rounded-3xl bg-chatBubble-ai-light dark:bg-chatBubble-ai-dark border border-slate-100 dark:border-slate-800/40 w-fit">
-            <div className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+        {sending && messages.length > 0 && (
+          <div className="flex gap-4 p-4 rounded-3xl bg-slate-900/40 border border-slate-900 w-fit mt-4">
+            <div className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center text-yellow-500 shrink-0">
               <Sparkles className="w-4 h-4 animate-spin-slow" />
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 bg-slate-400 dark:bg-slate-500 rounded-full typing-dot" />
-              <div className="w-2.5 h-2.5 bg-slate-400 dark:bg-slate-500 rounded-full typing-dot" />
-              <div className="w-2.5 h-2.5 bg-slate-400 dark:bg-slate-500 rounded-full typing-dot" />
+              <div className="w-2 h-2 bg-yellow-500/60 rounded-full typing-dot" />
+              <div className="w-2 h-2 bg-yellow-500/60 rounded-full typing-dot" />
+              <div className="w-2 h-2 bg-yellow-500/60 rounded-full typing-dot" />
             </div>
           </div>
         )}
@@ -417,110 +534,14 @@ const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
       </div>
 
       {/* BOTTOM INPUT CONTAINER PANEL */}
-      <footer className="p-4 border-t border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-950/20 backdrop-blur-md shrink-0 z-20">
-        <form onSubmit={handleSend} className="max-w-4xl mx-auto space-y-3">
-          
-          {/* File Attachment preview */}
-          {selectedFile && (
-            <div className="flex items-center justify-between p-3 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/30 rounded-2xl text-xs text-indigo-700 dark:text-indigo-400">
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                <span className="font-semibold truncate max-w-sm">{selectedFile.name}</span>
-                <span className="text-[10px] text-slate-400">({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedFile(null)}
-                className="p-1 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-lg transition-colors cursor-pointer"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
-
-          {/* Combined Controls Input row */}
-          <div className="flex gap-2">
-            
-            {/* Choose file upload */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              className="hidden"
-              accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.md"
-            />
-            <button
-              type="button"
-              onClick={triggerFileDialog}
-              className="p-3.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 rounded-2xl transition-colors cursor-pointer"
-              title="Attach File (PDF, text, images)"
-            >
-              <Paperclip className="w-5 h-5" />
-            </button>
-
-            {/* Text prompt */}
-            <div className="flex-grow relative flex items-center">
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSend(e);
-                  }
-                }}
-                rows={1}
-                className="w-full pl-4 pr-12 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-2xl text-sm outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-none transition-all"
-                placeholder={imageGenMode ? "Describe the image you want to generate..." : "Type your prompt or question..."}
-                style={{ maxHeight: '160px' }}
-              />
-
-              {/* Speech recognition toggle */}
-              {browserSupportsSpeech && (
-                <button
-                  type="button"
-                  onClick={isListening ? stopListening : startListening}
-                  className={`absolute right-3 p-1.5 rounded-lg transition-colors cursor-pointer ${
-                    isListening
-                      ? 'bg-rose-500 text-white hover:bg-rose-600 animate-pulse'
-                      : 'text-slate-400 hover:text-slate-650'
-                  }`}
-                  title={isListening ? "Listening... click to stop" : "Speak message"}
-                >
-                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                </button>
-              )}
-            </div>
-
-            {/* Image Gen Mode Toggle */}
-            <button
-              type="button"
-              onClick={() => setImageGenMode(!imageGenMode)}
-              className={`p-3.5 border rounded-2xl transition-colors cursor-pointer ${
-                imageGenMode
-                  ? 'bg-amber-500 border-amber-500 text-white hover:bg-amber-600'
-                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-              }`}
-              title="Generate Image instead"
-            >
-              <Image className="w-5 h-5" />
-            </button>
-
-            {/* Send trigger */}
-            <button
-              type="submit"
-              disabled={(!input.trim() && !selectedFile) || sending}
-              className="p-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-600/40 text-white rounded-2xl shadow-md disabled:shadow-none hover:shadow-indigo-500/35 flex items-center justify-center transition-all cursor-pointer font-bold"
-            >
-              <Send className="w-5 h-5" />
-            </button>
-
-          </div>
-          <span className="text-[10px] text-slate-400 dark:text-slate-500 text-center block pt-1 select-none">
+      {messages.length > 0 && (
+        <footer className="p-4 border-t border-slate-900/60 bg-[#05070c] shrink-0 z-20">
+          {renderInputForm(false)}
+          <span className="text-[9px] text-slate-500 text-center block pt-2 select-none">
             AI Chat Assistant may make errors. Verify important information.
           </span>
-        </form>
-      </footer>
+        </footer>
+      )}
 
     </div>
   );
