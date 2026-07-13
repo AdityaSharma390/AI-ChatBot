@@ -22,12 +22,12 @@ const ChatPage = () => {
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-chatBg-light dark:bg-chatBg-dark transition-colors duration-300">
+      <div className="h-screen w-screen flex flex-col items-center justify-center futuristic-grid">
         <div className="relative flex items-center justify-center">
-          <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-          <div className="absolute text-2xl animate-pulse">🤖</div>
+          <div className="w-16 h-16 border-4 border-yellow-500/20 border-t-yellow-500 rounded-full animate-spin"></div>
+          <div className="absolute w-8 h-8 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 rounded-full animate-pulse glow-gold"></div>
         </div>
-        <p className="mt-4 text-slate-500 dark:text-slate-400 font-semibold text-sm">Synchronizing Secure Session...</p>
+        <p className="mt-4 text-slate-500 font-semibold text-sm">Synchronizing Secure Session...</p>
       </div>
     );
   }
@@ -35,11 +35,11 @@ const ChatPage = () => {
   if (!user) return null;
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex bg-chatBg-light dark:bg-chatBg-dark transition-colors duration-300">
+    <div className="h-screen w-screen overflow-hidden flex bg-[#06080e]">
       
       {/* Sidebar Panel - slide-in drawer on mobile, static on desktop */}
       <div
-        className={`fixed md:relative inset-y-0 left-0 w-80 shrink-0 z-40 transform transition-transform duration-300 ease-in-out md:translate-x-0 bg-white dark:bg-slate-900 border-r border-slate-200/60 dark:border-slate-800/60 ${
+        className={`fixed md:relative inset-y-0 left-0 w-80 shrink-0 z-40 transform transition-transform duration-300 ease-in-out md:translate-x-0 bg-[#05070c] border-r border-slate-900 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -50,7 +50,7 @@ const ChatPage = () => {
       {sidebarOpen && (
         <div
           onClick={toggleSidebar}
-          className="fixed inset-0 bg-black/40 dark:bg-black/60 z-30 md:hidden backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-black/60 z-30 md:hidden backdrop-blur-sm transition-opacity"
         />
       )}
 

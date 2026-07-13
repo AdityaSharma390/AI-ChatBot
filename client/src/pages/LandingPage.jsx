@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
-import { Bot, Sparkles, History, Mic, Image, Moon, Sun, FileText, ArrowRight, Shield } from 'lucide-react';
+import { Sparkles, History, Mic, Image, Moon, Sun, FileText, ArrowRight, Shield, Zap } from 'lucide-react';
 
 const LandingPage = () => {
   const { user } = useContext(AuthContext);
@@ -18,30 +18,35 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-glow-gradient overflow-hidden flex flex-col font-sans transition-colors duration-300">
+    <div className="min-h-screen futuristic-grid overflow-hidden flex flex-col font-sans text-white relative">
+      
+      {/* Subtle gold radial glow in corner */}
+      <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-yellow-500/[0.07] to-transparent rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-yellow-500/[0.04] to-transparent rounded-full blur-3xl pointer-events-none" />
+
       {/* Header */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center z-10">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-500/30 flex items-center justify-center">
-            <Bot className="w-6 h-6 text-white" />
+          <div className="w-9 h-9 bg-yellow-500 rounded-xl shadow-lg shadow-yellow-500/20 flex items-center justify-center">
+            <Zap className="w-5 h-5 text-slate-950" />
           </div>
-          <span className="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-indigo-600 dark:from-white dark:to-indigo-400">
-            AI Chat Assistant
+          <span className="text-lg font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-yellow-400">
+            BuildHub AI
           </span>
         </div>
         <div className="flex items-center gap-4">
           <button
             onClick={toggleTheme}
-            className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-all duration-200"
+            className="p-2.5 rounded-xl border border-slate-800 text-slate-400 hover:text-yellow-400 hover:border-yellow-500/30 transition-all duration-200"
             aria-label="Toggle Theme"
           >
-            {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
+            {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5" />}
           </button>
           
           {user ? (
             <Link
               to="/chat"
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-200"
+              className="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-xl font-bold shadow-md shadow-yellow-500/20 hover:shadow-yellow-500/40 transition-all duration-200 text-sm"
             >
               Go to Chat
             </Link>
@@ -49,13 +54,13 @@ const LandingPage = () => {
             <>
               <Link
                 to="/login"
-                className="px-5 py-2.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium transition-colors"
+                className="px-5 py-2.5 text-slate-400 hover:text-white font-semibold transition-colors text-sm"
               >
                 Log In
               </Link>
               <Link
                 to="/register"
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/40 transition-all duration-200"
+                className="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-xl font-bold shadow-md shadow-yellow-500/20 hover:shadow-yellow-500/40 transition-all duration-200 text-sm"
               >
                 Sign Up
               </Link>
@@ -67,31 +72,40 @@ const LandingPage = () => {
       {/* Main Hero Section */}
       <main className="flex-grow flex flex-col justify-center items-center px-6 py-12 z-10 max-w-7xl mx-auto w-full">
         <div className="text-center max-w-3xl space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40 text-indigo-600 dark:text-indigo-400 text-sm font-semibold tracking-wide">
+
+          {/* Animated Orb */}
+          <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center animate-float">
+            <div className="absolute w-28 h-28 rounded-full bg-gradient-to-tr from-yellow-500 via-amber-500 to-yellow-600 blur-2xl opacity-20 animate-pulse-slow"></div>
+            <div className="absolute w-20 h-20 rounded-full border border-yellow-500/10 bg-gradient-to-tr from-yellow-500/10 to-transparent animate-spin-slow"></div>
+            <div className="absolute w-16 h-16 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 animate-orb-morph opacity-75 glow-gold border border-yellow-300/20"></div>
+            <div className="absolute w-16 h-16 rounded-full bg-white/5 backdrop-blur-[1px] border border-white/10 shadow-inner"></div>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-sm font-semibold tracking-wide">
             <Sparkles className="w-4 h-4" /> Next-Generation Conversation
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
             Experience the Future of{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-pulse-slow">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-yellow-400 to-amber-500">
               AI Assistance
             </span>
           </h1>
           
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
             A production-ready chatbot integrated with Google Gemini to handle documents, images, voice commands, and advanced code generation.
           </p>
 
           <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={handleStartChat}
-              className="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/55 hover:scale-[1.02] flex items-center justify-center gap-2.5 transition-all duration-200"
+              className="w-full sm:w-auto px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-2xl font-bold shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/40 hover:scale-[1.02] flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer"
             >
               Start Chatting Now <ArrowRight className="w-5 h-5" />
             </button>
             <a
               href="#features"
-              className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl font-semibold hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all duration-200 text-center"
+              className="w-full sm:w-auto px-8 py-4 bg-slate-900/60 border border-slate-800 text-slate-300 rounded-2xl font-semibold hover:bg-slate-900 hover:border-slate-700 transition-all duration-200 text-center"
             >
               Explore Features
             </a>
@@ -99,59 +113,59 @@ const LandingPage = () => {
         </div>
 
         {/* Feature Highlights Grid */}
-        <section id="features" className="mt-24 w-full grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="glass-effect p-8 rounded-3xl flex flex-col gap-4 shadow-xl shadow-slate-100/30 dark:shadow-none hover:scale-[1.02] transition-all duration-200">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+        <section id="features" className="mt-24 w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-8 rounded-3xl flex flex-col gap-4 bg-[#090c14]/60 border border-slate-900 hover:border-yellow-500/20 hover:scale-[1.02] transition-all duration-200 shadow-lg">
+            <div className="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-500">
               <FileText className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Multimodal File Upload</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+            <h3 className="text-lg font-bold text-white">Multimodal File Upload</h3>
+            <p className="text-slate-400 text-sm leading-relaxed">
               Upload PDFs, images, or code documents directly. The assistant parses content to answer detailed questions.
             </p>
           </div>
 
-          <div className="glass-effect p-8 rounded-3xl flex flex-col gap-4 shadow-xl shadow-slate-100/30 dark:shadow-none hover:scale-[1.02] transition-all duration-200">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+          <div className="p-8 rounded-3xl flex flex-col gap-4 bg-[#090c14]/60 border border-slate-900 hover:border-yellow-500/20 hover:scale-[1.02] transition-all duration-200 shadow-lg">
+            <div className="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-500">
               <Mic className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Voice Input & Output</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+            <h3 className="text-lg font-bold text-white">Voice Input & Output</h3>
+            <p className="text-slate-400 text-sm leading-relaxed">
               Talk to the AI with high-precision voice recognition, and hear responses read aloud with text-to-speech.
             </p>
           </div>
 
-          <div className="glass-effect p-8 rounded-3xl flex flex-col gap-4 shadow-xl shadow-slate-100/30 dark:shadow-none hover:scale-[1.02] transition-all duration-200">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+          <div className="p-8 rounded-3xl flex flex-col gap-4 bg-[#090c14]/60 border border-slate-900 hover:border-yellow-500/20 hover:scale-[1.02] transition-all duration-200 shadow-lg">
+            <div className="w-12 h-12 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-500">
               <Image className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">AI Image Generation</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+            <h3 className="text-lg font-bold text-white">AI Image Generation</h3>
+            <p className="text-slate-400 text-sm leading-relaxed">
               Create visuals on the fly. Simply request an image, and Stable Diffusion will render it instantly in the conversation.
             </p>
           </div>
         </section>
 
         {/* Security / Production Grid */}
-        <section className="mt-8 w-full grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="glass-effect p-8 rounded-3xl flex items-start gap-5 shadow-xl shadow-slate-100/30 dark:shadow-none">
-            <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900/40 text-rose-600 dark:text-rose-400 rounded-2xl">
+        <section className="mt-6 w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="p-8 rounded-3xl flex items-start gap-5 bg-[#090c14]/60 border border-slate-900 hover:border-yellow-500/20 transition-all duration-200 shadow-lg">
+            <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl shrink-0">
               <Shield className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h4 className="text-base font-bold text-slate-900 dark:text-white">Security-First Architecture</h4>
-              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+              <h4 className="text-base font-bold text-white">Security-First Architecture</h4>
+              <p className="text-slate-400 text-sm leading-relaxed">
                 Secured via Helmet, JWT Session authorization, bcrypt hashing, CORS blockers, and Winston/Morgan request logging.
               </p>
             </div>
           </div>
           
-          <div className="glass-effect p-8 rounded-3xl flex items-start gap-5 shadow-xl shadow-slate-100/30 dark:shadow-none">
-            <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-2xl">
+          <div className="p-8 rounded-3xl flex items-start gap-5 bg-[#090c14]/60 border border-slate-900 hover:border-yellow-500/20 transition-all duration-200 shadow-lg">
+            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl shrink-0">
               <History className="w-6 h-6" />
             </div>
             <div className="space-y-1">
-              <h4 className="text-base font-bold text-slate-900 dark:text-white">Persistent Chat History</h4>
-              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+              <h4 className="text-base font-bold text-white">Persistent Chat History</h4>
+              <p className="text-slate-400 text-sm leading-relaxed">
                 Save chats, customize categories, pin important prompts, export conversations as Markdown, Text, or PDF, and view performance graphs.
               </p>
             </div>
@@ -160,8 +174,8 @@ const LandingPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full text-center py-8 text-xs text-slate-500 dark:text-slate-500 z-10 border-t border-slate-200/50 dark:border-slate-900/50 mt-12 bg-white/20 dark:bg-slate-950/10 backdrop-blur-sm">
-        &copy; {new Date().getFullYear()} AI Chat Assistant. All rights reserved. Built with React and Gemini.
+      <footer className="w-full text-center py-8 text-xs text-slate-600 z-10 border-t border-slate-900/50 mt-12 bg-slate-950/20">
+        &copy; {new Date().getFullYear()} BuildHub AI. All rights reserved. Built with React and Gemini.
       </footer>
     </div>
   );
