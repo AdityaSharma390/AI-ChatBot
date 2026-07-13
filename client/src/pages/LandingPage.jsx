@@ -46,7 +46,7 @@ const LandingPage = () => {
           {user ? (
             <Link
               to="/chat"
-              className="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-xl font-bold shadow-md shadow-yellow-500/20 hover:shadow-yellow-500/40 transition-all duration-200 text-sm"
+              className="btn-glass-gold btn-glass-gold-sm text-sm"
             >
               Go to Chat
             </Link>
@@ -60,7 +60,7 @@ const LandingPage = () => {
               </Link>
               <Link
                 to="/register"
-                className="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-xl font-bold shadow-md shadow-yellow-500/20 hover:shadow-yellow-500/40 transition-all duration-200 text-sm"
+                className="btn-glass-gold btn-glass-gold-sm text-sm"
               >
                 Sign Up
               </Link>
@@ -96,16 +96,18 @@ const LandingPage = () => {
             A production-ready chatbot integrated with Google Gemini to handle documents, images, voice commands, and advanced code generation.
           </p>
 
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              onClick={handleStartChat}
-              className="w-full sm:w-auto px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-slate-950 rounded-2xl font-bold shadow-lg shadow-yellow-500/20 hover:shadow-yellow-500/40 hover:scale-[1.02] flex items-center justify-center gap-2.5 transition-all duration-200 cursor-pointer"
-            >
-              Start Chatting Now <ArrowRight className="w-5 h-5" />
-            </button>
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-5">
+            <div className="btn-glass-gold-wrapper">
+              <button
+                onClick={handleStartChat}
+                className="btn-glass-gold w-full sm:w-auto"
+              >
+                Start Chatting Now <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
             <a
               href="#features"
-              className="w-full sm:w-auto px-8 py-4 bg-slate-900/60 border border-slate-800 text-slate-300 rounded-2xl font-semibold hover:bg-slate-900 hover:border-slate-700 transition-all duration-200 text-center"
+              className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/[0.04] border border-slate-800 text-slate-300 font-semibold hover:bg-white/[0.08] hover:border-slate-700 transition-all duration-300 text-center backdrop-blur-sm"
             >
               Explore Features
             </a>

@@ -116,6 +116,137 @@
   box-shadow: 0 0 50px rgba(234, 179, 8, 0.4), 0 0 20px rgba(234, 179, 8, 0.2);
 }
 
+/* ═══════════════════════════════════════════════
+   Glassmorphic Gold Pill Button
+   ═══════════════════════════════════════════════ */
+.btn-glass-gold {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2.5rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(234, 179, 8, 0.08) 0%,
+    rgba(234, 179, 8, 0.15) 40%,
+    rgba(234, 179, 8, 0.05) 100%
+  );
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  box-shadow:
+    0 0 40px rgba(234, 179, 8, 0.15),
+    0 0 80px rgba(234, 179, 8, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  text-shadow: 0 0 20px rgba(234, 179, 8, 0.6), 0 0 40px rgba(234, 179, 8, 0.3);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* Internal smoky nebula glow */
+.btn-glass-gold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse 60% 80% at 30% 50%, rgba(234, 179, 8, 0.2), transparent 70%),
+    radial-gradient(ellipse 50% 60% at 70% 40%, rgba(251, 191, 36, 0.12), transparent 60%);
+  opacity: 0.8;
+  z-index: -1;
+  animation: nebula-drift 6s ease-in-out infinite alternate;
+}
+
+/* Glass refraction highlight on the right edge */
+.btn-glass-gold::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 50%;
+  height: 160%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.04) 40%,
+    transparent 70%
+  );
+  z-index: -1;
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+
+.btn-glass-gold:hover {
+  border-color: rgba(234, 179, 8, 0.45);
+  box-shadow:
+    0 0 50px rgba(234, 179, 8, 0.25),
+    0 0 100px rgba(234, 179, 8, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0 24px rgba(234, 179, 8, 0.8), 0 0 50px rgba(234, 179, 8, 0.4);
+  transform: scale(1.03);
+}
+
+.btn-glass-gold:active {
+  transform: scale(0.98);
+}
+
+/* Outer halo ring */
+.btn-glass-gold-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.btn-glass-gold-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: transparent;
+  border: 1px solid rgba(234, 179, 8, 0.08);
+  pointer-events: none;
+  animation: halo-pulse 3s ease-in-out infinite;
+}
+
+@keyframes nebula-drift {
+  0% {
+    background:
+      radial-gradient(ellipse 60% 80% at 25% 50%, rgba(234, 179, 8, 0.2), transparent 70%),
+      radial-gradient(ellipse 50% 60% at 75% 40%, rgba(251, 191, 36, 0.12), transparent 60%);
+  }
+  100% {
+    background:
+      radial-gradient(ellipse 60% 80% at 40% 55%, rgba(234, 179, 8, 0.18), transparent 70%),
+      radial-gradient(ellipse 50% 60% at 60% 35%, rgba(251, 191, 36, 0.15), transparent 60%);
+  }
+}
+
+@keyframes halo-pulse {
+  0%, 100% {
+    border-color: rgba(234, 179, 8, 0.06);
+    inset: -4px;
+  }
+  50% {
+    border-color: rgba(234, 179, 8, 0.14);
+    inset: -8px;
+  }
+}
+
+/* Smaller variant for form submit buttons */
+.btn-glass-gold-sm {
+  padding: 0.875rem 2rem;
+  font-size: 0.8125rem;
+}
+
 
 /* Typing Indicator Animation */
 .typing-dot {
