@@ -1,17 +1,16 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { ChatContext } from '../context/ChatContext';
-import { AuthContext } from '../context/AuthContext';
 import { useVoice } from '../hooks/useVoice';
 import MessageItem from './MessageItem';
 import { jsPDF } from 'jspdf';
 import { 
   Send, Paperclip, Mic, MicOff, Image, Sparkles, Star, Pin, 
   Download, Trash2, X, ChevronDown, Bot, FileText, Menu, AlertCircle,
-  Truck, Layers, Calculator, ArrowUpRight
+  Truck, Layers, Calculator, ArrowUpRight, Zap
 } from 'lucide-react';
 
 const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
-  const { user } = useContext(AuthContext);
+
   const {
     currentConversation,
     messages,
@@ -408,8 +407,8 @@ const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
           )}
 
           {/* User Profile Avatar Circle */}
-          <div className="w-8 h-8 rounded-full bg-yellow-500/20 text-yellow-500 border border-yellow-500/40 flex items-center justify-center font-bold text-xs shadow-md select-none">
-            {user?.name ? user.name[0].toUpperCase() : 'A'}
+          <div className="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center font-bold text-xs shadow-md select-none">
+            <Zap className="w-4 h-4 text-slate-950" />
           </div>
         </div>
       </header>
@@ -452,7 +451,7 @@ const ChatWindow = ({ toggleSidebar, sidebarOpen }) => {
 
             <div className="space-y-2 text-center mb-8 shrink-0">
               <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-yellow-100 via-yellow-400 to-amber-500 bg-clip-text text-transparent">
-                Welcome back {user?.name ? user.name.split(' ')[0] : 'Alex'}!
+                Welcome back!
               </h2>
               <p className="text-slate-400 text-xs tracking-wide">
                 Which house drawing do you want to analyze today?

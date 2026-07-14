@@ -1,38 +1,13 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import ChatWindow from '../components/ChatWindow';
 
 const ChatPage = () => {
-  const { user, loading } = useContext(AuthContext);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const navigate = useNavigate();
-
-  // Redirect to login if user is not authenticated
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/login');
-    }
-  }, [user, loading, navigate]);
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
   };
-
-  if (loading) {
-    return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center futuristic-grid">
-        <div className="relative flex items-center justify-center">
-          <div className="w-16 h-16 border-4 border-yellow-500/20 border-t-yellow-500 rounded-full animate-spin"></div>
-          <div className="absolute w-8 h-8 bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 rounded-full animate-pulse glow-gold"></div>
-        </div>
-        <p className="mt-4 text-slate-500 font-semibold text-sm">Synchronizing Secure Session...</p>
-      </div>
-    );
-  }
-
-  if (!user) return null;
 
   return (
     <div className="h-screen w-screen overflow-hidden flex bg-[#06080e]">

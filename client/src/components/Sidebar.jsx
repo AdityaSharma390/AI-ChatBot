@@ -1,15 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { ChatContext } from '../context/ChatContext';
-import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { 
-  Plus, Search, Pin, Star, Trash2, Edit3, LogOut, BarChart3, 
+  Plus, Search, Pin, Star, Trash2, Edit3, BarChart3, 
   Settings, Folder, Calendar, Sun, Moon, Check, X, Bot, Info, ChevronRight,
-  Lock, ArrowUpRight
+  Lock, ArrowUpRight, Zap
 } from 'lucide-react';
 
 const Sidebar = ({ closeSidebar }) => {
-  const { user, logout } = useContext(AuthContext);
+  // Auth removed — no login required
   const { darkMode, toggleTheme } = useContext(ThemeContext);
   const {
     conversations,
@@ -289,24 +288,17 @@ const Sidebar = ({ closeSidebar }) => {
             <ChevronRight className="w-4 h-4 text-slate-500" />
           </button>
 
-          {/* User profile & Logout bar */}
+          {/* App branding bar */}
           <div className="flex items-center justify-between px-3 py-2 bg-slate-950/30 rounded-2xl border border-slate-900/40">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-7 h-7 rounded-full bg-yellow-500/20 text-yellow-500 border border-yellow-500/30 flex items-center justify-center font-bold text-xs shrink-0 select-none">
-                {user?.name ? user.name[0].toUpperCase() : 'U'}
+              <div className="w-7 h-7 rounded-full bg-yellow-500 flex items-center justify-center shrink-0 select-none">
+                <Zap className="w-3.5 h-3.5 text-slate-950" />
               </div>
               <div className="overflow-hidden">
-                <p className="text-[11px] font-bold text-white truncate leading-none mb-0.5">{user?.name || 'User'}</p>
-                <p className="text-[9px] text-slate-500 truncate leading-none">{user?.email || ''}</p>
+                <p className="text-[11px] font-bold text-white truncate leading-none mb-0.5">BuildHub AI</p>
+                <p className="text-[9px] text-slate-500 truncate leading-none">Powered by Gemini</p>
               </div>
             </div>
-            <button
-              onClick={logout}
-              className="p-2 text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all cursor-pointer"
-              title="Sign Out"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
           </div>
         </div>
       </div>
