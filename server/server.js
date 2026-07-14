@@ -37,12 +37,12 @@ if (process.env.CLIENT_URL && !allowedOrigins.includes(process.env.CLIENT_URL)) 
   allowedOrigins.push(process.env.CLIENT_URL);
 }
 
-// Match Vercel preview deployment URLs for the same project
-const vercelProjectPattern = /^https:\/\/ai-chat.*-aditya-sharmas-projects-db708021\.vercel\.app$/;
-
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || vercelProjectPattern.test(origin)) {
+    // Allow requests with no origin (server-to-server, curl, etc.)
+    if (!origin) return callback(null, true);
+    // Allow explicit origins and any *.vercel.app deployment
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
